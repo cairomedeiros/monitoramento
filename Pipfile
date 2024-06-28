@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 django = "*"
 firebase-admin = "*"
+python-dotenv = "*"
+phue = "*"
 
 [dev-packages]
 
