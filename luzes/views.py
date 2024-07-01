@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.conf import settings
+from django.shortcuts import render
 
 from phue import Bridge
 import firebase_admin
@@ -10,13 +11,14 @@ import os
 BASE_DIR = os.environ.get(r"BASE_DIR")
 FIREBASE_CREDENTIALS = os.path.join(BASE_DIR, os.environ.get("FIREBASE_CREDENTIALS"))
 cred = credentials.Certificate(FIREBASE_CREDENTIALS)
-firebase_admin.initialize_app(cred)
+if not firebase_admin._apps:
+    firebase_admin.initialize_app(cred)
 
 # Cliente do Firestore
 db = firestore.client()
 
 # Configuração do Philips Hue
-BRIDGE_IP = '192.168.1.2'  # Substitua pelo IP do seu hub
+BRIDGE_IP = os.environ.get("IP_HUB") # Substitua pelo IP do seu hub
 bridge = Bridge(BRIDGE_IP)
 
 def controlar_luz(request, luz_id, action):
@@ -38,7 +40,10 @@ def set_brilho(request, luz_id, brilho):
     return JsonResponse({'brilho': luz['brilho']})
 
 def listar_luzes(request):
-    luzes_ref = db.collection('luzes')
-    luzes = [luz.to_dict() for luz in luzes_ref.stream()]
-    return JsonResponse(luzes, safe=False)
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        luzes_ref = db.collection('luzes')
+        luzes = [luz.to_dict() for luz in luzes_ref.stream()]
+        return JsonResponse(luzes, safe=False)
+    else:
+        return render(request, 'luzes/index.html')
 

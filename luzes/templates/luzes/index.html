@@ -1,0 +1,40 @@
+<!-- luzes/templates/luzes/index.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Controle de Luzes</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'luzes/style.css' %}">
+</head>
+<body>
+    <h1>Controle de Luzes</h1>
+    <div>
+        <button onclick="listarLuzes()">Listar Luzes</button>
+    </div>
+    <div id="luzes-list"></div>
+
+    <h2>Controlar Luz</h2>
+    <form id="controlar-luz-form" onsubmit="controlarLuz(event)">
+        <label for="luz-id">ID da Luz:</label>
+        <input type="text" id="luz-id" name="luz-id" required>
+        <label for="action">Ação:</label>
+        <select id="action" name="action">
+            <option value="on">Ligar</option>
+            <option value="off">Desligar</option>
+        </select>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <h2>Ajustar Brilho</h2>
+    <form id="ajustar-brilho-form" onsubmit="setBrilho(event)">
+        <label for="luz-id-brilho">ID da Luz:</label>
+        <input type="text" id="luz-id-brilho" name="luz-id-brilho" required>
+        <label for="brilho">Brilho:</label>
+        <input type="number" id="brilho" name="brilho" min="0" max="100" required>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <script src="{% static 'luzes/main.js' %}"></script>
+</body>
+</html>
